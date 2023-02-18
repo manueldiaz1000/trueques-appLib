@@ -10,8 +10,9 @@ type BaseResponse struct {
 	Error   string `json:"error"`
 }
 
-func InitApi(version string) Api {
+func InitApi(name string, version string) Api {
 	return Api{
+		Name:    name,
 		Version: version,
 	}
 }
