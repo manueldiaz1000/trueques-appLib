@@ -1,4 +1,4 @@
-package pepe
+package truequeslib
 
 import "fmt"
 
