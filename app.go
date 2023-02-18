@@ -1,6 +1,7 @@
 package truequeslib
 
 type Api struct {
+	Name    string
 	Version string
 }
 
