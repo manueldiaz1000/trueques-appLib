@@ -8,6 +8,7 @@ var (
 	ErrCreatingLogFile  = errors.New("err-creating_logFile")
 	ErrLoadingConfig    = errors.New("err-load_config")
 	ErrRunningApp       = errors.New("err-running_app")
+	ErrCreatingApp      = errors.New("err-creating_app")
 	ErrItemNotFound     = errors.New("err-item_not_found")
 
 	// messages info
