@@ -1,0 +1,5 @@
+server:
+  port: 8870
+  gin_mode: release
+  read_timeout: 15
+  write_timeout: 15

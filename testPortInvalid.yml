@@ -1,0 +1,5 @@
+server:
+  port: -1
+  gin_mode: debug
+  read_timeout: 10
+  write_timeout: 10

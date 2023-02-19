@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -34,9 +35,13 @@ type BaseResponse struct {
 }
 
 func NewApp(name string, version string) (App, error) {
+	if strings.Trim(name, " ") == "" {
+		return App{}, fmt.Errorf("err-log_filename_empty")
+	}
+
 	f, err := os.OpenFile(name+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return App{}, fmt.Errorf("err-setting_logFile: %w", err)
+		return App{}, fmt.Errorf("err-creating_logFile: %w", err)
 	}
 
 	log.SetOutput(f)
@@ -70,6 +75,19 @@ func (app *App) LoadConfig() error {
 	gin.SetMode(app.Server.GinMode)
 
 	router := gin.Default()
+
+	if app.Server.Port == 0 {
+		app.Server.Port = 8080
+	}
+
+	if app.Server.ReadTimeout == 0 {
+		app.Server.ReadTimeout = 10
+	}
+
+	if app.Server.WriteTimeout == 0 {
+		app.Server.WriteTimeout = 10
+	}
+
 	httpServer := &http.Server{
 		Addr:         ":" + strconv.Itoa(app.Server.Port),
 		Handler:      router,
