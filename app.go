@@ -37,12 +37,12 @@ type BaseResponse struct {
 
 func NewApp(name string, version string) (App, error) {
 	if strings.Trim(name, " ") == "" {
-		return App{}, fmt.Errorf("err-log_filename_empty")
+		return App{}, ErrLogFilenameEmpty
 	}
 
 	f, err := os.OpenFile(name+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return App{}, fmt.Errorf("err-creating_logFile: %w", err)
+		return App{}, fmt.Errorf(ErrCreatingLogFile.Error()+": %w", err)
 	}
 
 	log.SetOutput(f)
@@ -55,7 +55,7 @@ func NewApp(name string, version string) (App, error) {
 
 	err = app.LoadConfig()
 	if err != nil {
-		return App{}, fmt.Errorf("err-load_config: %w", err)
+		return App{}, fmt.Errorf(ErrLoadingConfig.Error()+": %w", err)
 	}
 
 	return app, nil
