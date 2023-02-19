@@ -18,9 +18,9 @@ func TestNewAppOK(t *testing.T) {
 	assert.Equal(t, time.Duration(15*time.Second), app.Server.HttpServer.ReadTimeout)
 	assert.Equal(t, time.Duration(15*time.Second), app.Server.HttpServer.WriteTimeout)
 	assert.NotEmpty(t, app.Server.Router)
-
-	err = app.Run()
-	assert.NoError(t, err)
+	assert.Equal(t, 1, app.Params["param1"])
+	assert.Equal(t, "2", app.Params["param2"])
+	assert.Equal(t, true, app.Params["paramN"])
 }
 
 func TestNewApp_DefaultConfigOK(t *testing.T) {

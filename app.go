@@ -16,8 +16,9 @@ import (
 type App struct {
 	Name    string
 	Version string
-	Config  Config
 	Server  Server `yaml:"server"`
+	Config  Config
+	Params  map[string]interface{} `yaml:"params"`
 }
 
 type Server struct {
@@ -72,9 +73,11 @@ func (app *App) LoadConfig() error {
 		return fmt.Errorf("err-unmarshalling_yamlFile %s: %w", cfgFilename, err)
 	}
 
-	gin.SetMode(app.Server.GinMode)
-
 	router := gin.Default()
+	if app.Server.GinMode == "" {
+		app.Server.GinMode = "debug"
+		gin.SetMode(app.Server.GinMode)
+	}
 
 	if app.Server.Port == 0 {
 		app.Server.Port = 8080

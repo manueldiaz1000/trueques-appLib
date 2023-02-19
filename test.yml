@@ -3,3 +3,7 @@ server:
   gin_mode: release
   read_timeout: 15
   write_timeout: 15
+params:
+  param1: 1
+  param2: "2"
+  paramN: true
