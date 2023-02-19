@@ -55,37 +55,43 @@ func NewApp(name string, version string) (App, error) {
 	return app, nil
 }
 
-func (api *App) LoadConfig() error {
-	cfgFilename := api.Name + ".yml"
+func (app *App) LoadConfig() error {
+	cfgFilename := app.Name + ".yml"
 	yamlFile, err := os.ReadFile(cfgFilename)
 	if err != nil {
 		return fmt.Errorf("err-reading_yamlFile %s: %w", cfgFilename, err)
 	}
 
-	err = yaml.Unmarshal(yamlFile, &api)
+	err = yaml.Unmarshal(yamlFile, &app)
 	if err != nil {
 		return fmt.Errorf("err-unmarshalling_yamlFile %s: %w", cfgFilename, err)
 	}
 
-	gin.SetMode(api.Server.GinMode)
+	gin.SetMode(app.Server.GinMode)
 
 	router := gin.Default()
 	httpServer := &http.Server{
-		Addr:         ":" + strconv.Itoa(api.Server.Port),
+		Addr:         ":" + strconv.Itoa(app.Server.Port),
 		Handler:      router,
-		ReadTimeout:  time.Duration(api.Server.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(api.Server.WriteTimeout) * time.Second,
+		ReadTimeout:  time.Duration(app.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(app.Server.WriteTimeout) * time.Second,
 	}
 
-	api.Server.Router = router
-	api.Server.HttpServer = httpServer
+	app.Server.Router = router
+	app.Server.HttpServer = httpServer
 
 	return nil
 }
 
-func (api *App) GetBaseReponse(err string) BaseResponse {
+func (app *App) Run() error {
+	log.Println("Running app in port " + app.Server.HttpServer.Addr)
+	err := app.Server.HttpServer.ListenAndServe()
+	return err
+}
+
+func (app *App) GetBaseReponse(err string) BaseResponse {
 	return BaseResponse{
-		Version: api.Version,
+		Version: app.Version,
 		Error:   err,
 	}
 }
