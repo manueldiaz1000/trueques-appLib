@@ -16,8 +16,7 @@ import (
 type App struct {
 	Name    string
 	Version string
-	Server  Server `yaml:"server"`
-	Config  Config
+	Server  Server                 `yaml:"server"`
 	Params  map[string]interface{} `yaml:"params"`
 }
 
