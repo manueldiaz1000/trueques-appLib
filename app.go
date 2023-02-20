@@ -1,6 +1,7 @@
 package truequeslib
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -108,4 +109,27 @@ func (app *App) Run() error {
 	log.Println("Running app in port " + app.Server.HttpServer.Addr)
 	err := app.Server.HttpServer.ListenAndServe()
 	return err
+}
+
+func (app *App) BuildResponse(data interface{}, err error) (int, Response) {
+	response := Response{
+		Version: app.Version,
+		Data:    data,
+	}
+
+	if err == nil {
+		return http.StatusOK, response
+	}
+
+	response.Error = err.Error()
+
+	if strings.HasPrefix(err.Error(), "err-param") {
+		return http.StatusBadRequest, response
+	}
+
+	if errors.Is(err, ErrItemNotFound) {
+		return http.StatusNotFound, response
+	}
+
+	return http.StatusInternalServerError, response
 }
