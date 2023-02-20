@@ -58,24 +58,6 @@ func TestNewApp_YmlFileUnmarshallError(t *testing.T) {
 	assert.Contains(t, err.Error(), "err-unmarshalling_yamlFile")
 }
 
-func TestGetBaseResponseOK(t *testing.T) {
-	app, err := NewApp("test", "0.0.1")
-	assert.NoError(t, err)
-
-	response := app.GetBaseReponse("err-not_found")
-	assert.Equal(t, "0.0.1", response.Version)
-	assert.Equal(t, "err-not_found", response.Error)
-}
-
-func TestGetBaseResponseError(t *testing.T) {
-	app, err := NewApp("test", "0.0.1")
-	assert.NoError(t, err)
-
-	response := app.GetBaseReponse("")
-	assert.NotEqual(t, "0.0.0", response.Version)
-	assert.Empty(t, "", response.Error)
-}
-
 func TestRunAppOK(t *testing.T) {
 	app, err := NewApp("testPortInvalid", "0.0.1")
 	assert.NoError(t, err)

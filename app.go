@@ -29,9 +29,10 @@ type Server struct {
 	WriteTimeout int    `yaml:"write_timeout"`
 }
 
-type BaseResponse struct {
-	Version string `json:"version"`
-	Error   string `json:"error"`
+type Response struct {
+	Version string      `json:"version"`
+	Error   string      `json:"error"`
+	Data    interface{} `json:"data"`
 }
 
 func NewApp(name string, version string) (App, error) {
@@ -107,11 +108,4 @@ func (app *App) Run() error {
 	log.Println("Running app in port " + app.Server.HttpServer.Addr)
 	err := app.Server.HttpServer.ListenAndServe()
 	return err
-}
-
-func (app *App) GetBaseReponse(err string) BaseResponse {
-	return BaseResponse{
-		Version: app.Version,
-		Error:   err,
-	}
 }
