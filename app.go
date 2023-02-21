@@ -38,12 +38,12 @@ type Response struct {
 
 func NewApp(name string, version string) (App, error) {
 	if strings.Trim(name, " ") == "" {
-		return App{}, ErrLogFilenameEmpty
+		return App{}, errors.New("err-log_filename_empty")
 	}
 
 	f, err := os.OpenFile(name+".log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return App{}, fmt.Errorf(ErrCreatingLogFile.Error()+": %w", err)
+		return App{}, fmt.Errorf("err-creating_logFile: %w", err)
 	}
 
 	log.SetOutput(f)
@@ -56,7 +56,7 @@ func NewApp(name string, version string) (App, error) {
 
 	err = app.LoadConfig()
 	if err != nil {
-		return App{}, fmt.Errorf(ErrLoadingConfig.Error()+": %w", err)
+		return App{}, fmt.Errorf("err-load_config: %w", err)
 	}
 
 	return app, nil
@@ -115,6 +115,7 @@ func (app *App) BuildResponse(data interface{}, err error) (int, Response) {
 	response := Response{
 		Version: app.Version,
 		Data:    data,
+		Error:   "",
 	}
 
 	if err == nil {

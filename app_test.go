@@ -1,6 +1,8 @@
 package truequeslib
 
 import (
+	"errors"
+	"net/http"
 	"testing"
 	"time"
 
@@ -64,4 +66,42 @@ func TestRunAppOK(t *testing.T) {
 
 	err = app.Run()
 	assert.Contains(t, err.Error(), "invalid port")
+}
+
+func TestBuildResponseStatusOk(t *testing.T) {
+	app, err := NewApp("test", "0.0.1")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, app)
+
+	type TestData struct {
+		F1 int
+		F2 string
+	}
+
+	testData := TestData{F1: 1, F2: "value"}
+
+	status, response := app.BuildResponse(testData, nil)
+	assert.Equal(t, http.StatusOK, status)
+	assert.Equal(t, "0.0.1", response.Version)
+	assert.Equal(t, "", response.Error)
+	assert.Equal(t, 1, response.Data.(TestData).F1)
+	assert.Equal(t, "value", response.Data.(TestData).F2)
+
+	status, response = app.BuildResponse(nil, errors.New("err-param"))
+	assert.Equal(t, http.StatusBadRequest, status)
+	assert.Equal(t, "0.0.1", response.Version)
+	assert.Contains(t, response.Error, "err-param")
+	assert.Nil(t, response.Data)
+
+	status, response = app.BuildResponse(nil, ErrItemNotFound)
+	assert.Equal(t, http.StatusNotFound, status)
+	assert.Equal(t, "0.0.1", response.Version)
+	assert.Contains(t, response.Error, "err-item_not_found")
+	assert.Nil(t, response.Data)
+
+	status, response = app.BuildResponse(nil, errors.New("other_error"))
+	assert.Equal(t, http.StatusInternalServerError, status)
+	assert.Equal(t, "0.0.1", response.Version)
+	assert.Contains(t, response.Error, "other_error")
+	assert.Nil(t, response.Data)
 }
