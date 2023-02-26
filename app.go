@@ -63,7 +63,7 @@ func NewApp(name string, version string) (App, error) {
 }
 
 func (app *App) LoadConfig() error {
-	cfgFilename := app.Name + ".yml"
+	cfgFilename := app.Name + ".yaml"
 	yamlFile, err := os.ReadFile(cfgFilename)
 	if err != nil {
 		return fmt.Errorf("err-reading_yamlFile %s: %w", cfgFilename, err)
